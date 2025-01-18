@@ -3,6 +3,7 @@ const os = require('os');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const users = require('./users');
 
 var path = require('path');
 var baseDir = path.resolve('.');
@@ -24,16 +25,22 @@ app.use(bodyParser.urlencoded({
 
 app.set('port', (process.env.PORT || 8080));
 
+// 정적 자격증명 파일(users.js) 이용
 const externalAuth = (tokenReview) => {
     let [userid, passwd] = tokenReview.spec.token.split(':');
-    
+
     let status = {};
-    status.authenticated =  true;
-    status.user = {
-       username: userid,
-       uid: userid,
-       groups: ['system:masters']
+    if (users[userid] && users[userid].password === passwd) {
+        status.authenticated =  true;
+        status.user = {
+           username: userid,
+           uid: userid,
+           groups: users[userid].groups
+        }
+    } else {
+        status.authenticated =  false;
     }
+
     return status;
 } 
  
