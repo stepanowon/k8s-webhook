@@ -52,6 +52,14 @@ app.post("/", function(req, res) {
     res.json(tokenReview);
 });
 
+app.get("/", function(req, res) {
+    return res.status(200).send(`
+        <div>
+          <h2> k8s webhook 테스트 서버</h2>
+        </div>
+    `);
+});
+
 app.listen(app.get('port'), function() {
     console.log("web hook server가 " + app.get('port') + "번 포트에서 시작되었습니다!");
 });
